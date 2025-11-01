@@ -5,11 +5,7 @@ import { Battle } from "./scenes/Battle.ts";
 new Phaser.Game({
   type: Phaser.AUTO,
   backgroundColor: "#0f0f1a",
-  scale: {
-    mode: Phaser.Scale.FIT,
-    autoCenter: Phaser.Scale.CENTER_BOTH,
-    width: 720,
-    height: 1280,
-  },
+  render: { pixelArt: true, antialias: false },
+  scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH, width: 720, height: 1280 },
   scene: [Menu, Battle],
 });

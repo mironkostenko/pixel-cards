@@ -1,5 +1,10 @@
 import Phaser from "phaser";
 
+// --- Option B: resolve image URLs from src/ with Vite/ESM ---
+const cardUrls = [1, 2, 3, 4, 5].map(
+  (i) => new URL(`../assets/images/${i}.png`, import.meta.url).href
+);
+
 function buttonStyle(bgColor: string = "#ffd166") {
   return {
     fontFamily: "monospace",
@@ -19,14 +24,21 @@ export class Battle extends Phaser.Scene {
   private playerHPText!: Phaser.GameObjects.Text;
   private enemyHPText!: Phaser.GameObjects.Text;
 
-  private playerCardText!: Phaser.GameObjects.Text;
-  private enemyCardText!: Phaser.GameObjects.Text;
+  private playerCardSprite?: Phaser.GameObjects.Image;
+  private enemyCardSprite?: Phaser.GameObjects.Image;
 
   private playBtn!: Phaser.GameObjects.Text;
   private finished!: boolean;
 
   constructor() {
     super("Battle");
+  }
+
+  // Preload resolved URLs so Phaser can find them in dev/build
+  preload() {
+    cardUrls.forEach((url, idx) => {
+      this.load.image(`card_${idx + 1}`, url);
+    });
   }
 
   init() {
@@ -55,15 +67,7 @@ export class Battle extends Phaser.Scene {
       .setOrigin(1, 0);
     this.updateHPTexts();
 
-    // Cards (big numbers)
-    this.playerCardText = this.add
-      .text(width * 0.25, height * 0.45, "?", this.cardStyle())
-      .setOrigin(0.5);
-    this.enemyCardText = this.add
-      .text(width * 0.75, height * 0.45, "?", this.cardStyle())
-      .setOrigin(0.5);
-
-    // Labels
+    // Labels where cards will appear
     this.add
       .text(width * 0.25, height * 0.55, "YOU", this.labelStyle())
       .setOrigin(0.5);
@@ -98,30 +102,42 @@ export class Battle extends Phaser.Scene {
   private playTurn() {
     if (this.finished) return;
 
-    // Draw 1..5
+    const { width, height } = this.scale;
+
+    // Draw cards 1..5
     const playerCard = Phaser.Math.Between(1, 5);
     const enemyCard = Phaser.Math.Between(1, 5);
 
-    // Reveal
-    this.playerCardText.setText(String(playerCard));
-    this.enemyCardText.setText(String(enemyCard));
+    // Remove previous card images if present
+    this.playerCardSprite?.destroy();
+    this.enemyCardSprite?.destroy();
+
+    // Add new card images (integer scale for crisp pixels; your cards are 128x192)
+    this.playerCardSprite = this.add
+      .image(width * 0.25, height * 0.45, `card_${playerCard}`)
+      .setOrigin(0.5)
+      .setScale(2); // 128x192 * 2 = 256x384
+    this.enemyCardSprite = this.add
+      .image(width * 0.75, height * 0.45, `card_${enemyCard}`)
+      .setOrigin(0.5)
+      .setScale(2);
 
     // Juicy pop
-    this.tweenPop(this.playerCardText);
-    this.tweenPop(this.enemyCardText);
+    this.tweenPop(this.playerCardSprite);
+    this.tweenPop(this.enemyCardSprite);
 
-    // Lower number loses 1 HP; tie = no change
+    // Rule: lower number loses 1 HP; tie = nothing
     if (playerCard < enemyCard) {
       this.playerHP = Math.max(0, this.playerHP - 1);
-      this.flash(this.playerCardText, 0xff4d6d);
+      this.flash(this.playerCardSprite, 0xff4d6d);
     } else if (enemyCard < playerCard) {
       this.enemyHP = Math.max(0, this.enemyHP - 1);
-      this.flash(this.enemyCardText, 0xffd166);
+      this.flash(this.enemyCardSprite, 0xffd166);
     }
 
     this.updateHPTexts();
 
-    // End states
+    // Check end states
     if (this.playerHP <= 0) {
       this.endScreen("GAME OVER", "TRY AGAIN", false);
     } else if (this.enemyHP <= 0) {
@@ -198,17 +214,9 @@ export class Battle extends Phaser.Scene {
     } as Phaser.Types.GameObjects.Text.TextStyle;
   }
 
-  private cardStyle() {
-    return {
-      fontFamily: "monospace",
-      fontSize: "96px",
-      color: "#ffffff",
-      stroke: "#000000",
-      strokeThickness: 6,
-    } as Phaser.Types.GameObjects.Text.TextStyle;
-  }
-
-  private tweenPop(target: Phaser.GameObjects.Text) {
+  private tweenPop(
+    target: Phaser.GameObjects.Image | Phaser.GameObjects.Text
+  ) {
     this.tweens.add({
       targets: target,
       scaleX: 1.15,
@@ -219,7 +227,10 @@ export class Battle extends Phaser.Scene {
     });
   }
 
-  private flash(target: Phaser.GameObjects.Text, tint: number) {
+  private flash(
+    target: Phaser.GameObjects.Image | Phaser.GameObjects.Text,
+    tint: number
+  ) {
     target.setTint(tint);
     this.time.delayedCall(120, () => target.clearTint());
   }
