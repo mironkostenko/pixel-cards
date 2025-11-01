@@ -43,7 +43,7 @@ export class Battle extends Phaser.Scene {
       this.load.image(`card_${idx + 1}`, url);
     });
     // sound
-    this.load.audio("cardSound", cardSoundUrl);
+    //this.load.audio("cardSound", cardSoundUrl);
   }
 
   init() {
@@ -128,7 +128,7 @@ export class Battle extends Phaser.Scene {
       .setScale(2);
 
     // 🔊 Play sound when both cards appear
-    this.sound.play("cardSound", { volume: 0.8 });
+    //this.sound.play("cardSound", { volume: 0.8 });
 
     // Juicy pop
     this.tweenPop(this.playerCardSprite);
