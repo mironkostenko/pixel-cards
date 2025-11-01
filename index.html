@@ -7,6 +7,21 @@
     <title>pixel-cards</title>
   </head>
   <body>
+    <!-- index.html -->
+<body>
+  <div id="boot-banner"
+       style="position:fixed;top:0;left:0;right:0;z-index:9999;
+              font:12px monospace;padding:4px;color:#fff;background:#333;">
+    inline OK — waiting for module...
+  </div>
+
+  <script>
+    // mark that inline JS ran
+    (function(){
+      var el = document.getElementById('boot-banner');
+      if (el) el.textContent = 'inline OK — waiting for module... UA: ' + navigator.userAgent;
+    })();
+  </script>
     <div id="app"></div>
     <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
 <script>eruda.init();</script>
