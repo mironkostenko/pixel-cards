@@ -1,9 +1,11 @@
 import Phaser from "phaser";
 
-// --- Option B: resolve image URLs from src/ with Vite/ESM ---
+// --- Resolve image URLs from src/ with Vite/ESM ---
 const cardUrls = [1, 2, 3, 4, 5].map(
   (i) => new URL(`../assets/images/${i}.png`, import.meta.url).href
 );
+// Resolve sound URL
+const cardSoundUrl = new URL("../assets/sound.wav", import.meta.url).href;
 
 function buttonStyle(bgColor: string = "#ffd166") {
   return {
@@ -36,9 +38,12 @@ export class Battle extends Phaser.Scene {
 
   // Preload resolved URLs so Phaser can find them in dev/build
   preload() {
+    // cards
     cardUrls.forEach((url, idx) => {
       this.load.image(`card_${idx + 1}`, url);
     });
+    // sound
+    this.load.audio("cardSound", cardSoundUrl);
   }
 
   init() {
@@ -121,6 +126,9 @@ export class Battle extends Phaser.Scene {
       .image(width * 0.75, height * 0.45, `card_${enemyCard}`)
       .setOrigin(0.5)
       .setScale(2);
+
+    // 🔊 Play sound when both cards appear
+    this.sound.play("cardSound", { volume: 0.8 });
 
     // Juicy pop
     this.tweenPop(this.playerCardSprite);
