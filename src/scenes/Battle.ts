@@ -5,7 +5,7 @@ const cardUrls = [1, 2, 3, 4, 5].map(
   (i) => new URL(`../assets/images/${i}.png`, import.meta.url).href
 );
 // Resolve sound URL
-const cardSoundUrl = new URL("../assets/sound.wav", import.meta.url).href;
+//const cardSoundUrl = new URL("../assets/sound.wav", import.meta.url).href;
 
 function buttonStyle(bgColor: string = "#ffd166") {
   return {
