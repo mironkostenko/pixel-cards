@@ -8,7 +8,12 @@ const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
 new Phaser.Game({
   type: isIOS ? Phaser.CANVAS : Phaser.AUTO,  // 👈 force Canvas on iOS
   backgroundColor: "#0f0f1a",
-  render: { pixelArt: true, antialias: false, roundPixels: true },
+  render: {
+  pixelArt: true,
+  antialias: false,
+  roundPixels: true,
+  powerPreference: "default",
+},
   scale: {
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
