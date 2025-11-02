@@ -82,7 +82,7 @@ export class Battle extends Phaser.Scene {
 
     // Play Turn button (green)
     this.playBtn = this.add
-      .text(width / 2, height * 0.8, "PLAY TURN", buttonStyle("#06d6a0"))
+      .text(width / 2, height * 0.8, "PLAY TURN", buttonStyle("#d60606ff"))
       .setOrigin(0.5)
       .setInteractive({ useHandCursor: true });
     this.playBtn.on("pointerdown", () => this.playTurn());
