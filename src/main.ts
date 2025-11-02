@@ -3,15 +3,6 @@ import Phaser from "phaser";
 import { Menu } from "./scenes/Menu";
 import { Battle } from "./scenes/Battle";
 
-// --- Debug aid (shows text immediately on page load) ---
-console.log("UA:", navigator.userAgent);
-document.body.style.background = "#000";
-document.body.innerHTML = `
-  <p style="color:white;font-family:monospace;text-align:center;margin-top:40px">
-    Init OK — Phaser loading...
-  </p>
-`;
-
 // --- iOS detection ---
 const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
 

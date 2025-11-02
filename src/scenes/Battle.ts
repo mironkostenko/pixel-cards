@@ -7,7 +7,7 @@ const cardUrls = [1, 2, 3, 4, 5].map(
 // Resolve sound URL
 //const cardSoundUrl = new URL("../assets/sound.wav", import.meta.url).href;
 
-function buttonStyle(bgColor: string = "#ffd166") {
+function buttonStyle(bgColor: string = "#ff6666ff") {
   return {
     fontFamily: "monospace",
     fontSize: "32px",
